@@ -6,5 +6,15 @@ sc = SlackClient(token)
 
 print(sc.api_call('api.test'))
 
-if sc.rtm_connect():
-    print()
+criclive_token = "1n4NyiVvw9EPmc1YtnzfLi3D"
+
+app = Flask(__name__)
+
+@app.route('/', methods=['POST'])
+def criclive():
+    text = request.values.get('token')
+    print(text)
+
+
+if __name__ == '__main__':
+    app.run()
