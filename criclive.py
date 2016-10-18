@@ -1,6 +1,6 @@
 import time
 from slackclient import SlackClient
-import flask
+from flask import Flask
 
 
 token = "xoxp-91848767090-91832453094-91914233108-e4c6ccf83f763c7f3620afbcb167d362"
