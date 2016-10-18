@@ -1,5 +1,5 @@
 from slackclient import SlackClient
-from flask import Flask
+from flask import Flask, request
 import os
 import time
 
