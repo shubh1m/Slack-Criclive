@@ -1,1 +1,1 @@
-web: python criclive.py
+web: python app.py
