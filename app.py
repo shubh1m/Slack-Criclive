@@ -1,6 +1,7 @@
-import time
 from slackclient import SlackClient
 from flask import Flask
+import os
+import time
 
 
 token = "xoxp-91848767090-91832453094-91914233108-e4c6ccf83f763c7f3620afbcb167d362"
@@ -17,6 +18,6 @@ def criclive():
     text = request.values.get('token')
     print(text)
 
-
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
