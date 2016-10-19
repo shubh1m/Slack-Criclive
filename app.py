@@ -62,7 +62,7 @@ def getHTML(url):
     return soup
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['POST'])
 def main():
     token = request.values.get('token')
     if TOKEN == token:
