@@ -1,21 +1,76 @@
 from slackclient import SlackClient
 from flask import Flask, request
+from bs4 import BeautifulSoup
+import requests
 import os
 import time
 
 app = Flask(__name__)
 
-#token = "xoxp-91848767090-91832453094-91914233108-e4c6ccf83f763c7f3620afbcb167d362"
-#sc = SlackClient(token)
-#print(sc.api_call('api.test'))
-
 TOKEN = "1n4NyiVvw9EPmc1YtnzfLi3D"
+URL = "http://www.espncricinfo.com/ci/engine/match/index.html?view=live"
+
+'''
+    Content-type: application/json
+    {
+                "text": "This is a line of text.\nAnd this is another one."
+                }
+
+'''
+
+def getCategories(soup):
+    categories = soup.find_all("div", "match-section-head")
+    categories = [x.string for x in categories]
+    return categories
+
+def getMatches(soup):
+    matches = []
+    categories = getCategories(soup)
+    soup = soup.find(id="live-match-data")
+    i=0
+    for match_block in soup.find_all("section", "matches-day-block"):
+        details = {}
+        details = {
+                'category': categories[i],
+                'matches': []
+                }
+        i+=1
+        for match in match_block.find_all("section", "default-match-block "):
+            det = {
+                'dates': match.find("div", "match-info").find("span", "bold").string,
+                'team1': {
+                    'name': match.find("div", "innings-info-1").contents[0].strip(),
+                    'score': match.find("div", "innings-info-1").contents[1].string
+                    },
+                'team2': {
+                    'name': match.find("div", "innings-info-2").contents[0].strip(),
+                    'score': match.find("div", "innings-info-2").contents[1].string
+                    },
+                'status': match.find("div", "match-status").find("span", "bold").string
+                }
+            details['matches'].append(det)
+        matches.append(details)
+    return matches
+    #for match in matches:
+    #    print (match)
+    #    print()
 
 
-@app.route('/', methods=['POST'])
-def criclive():
+def getHTML(url):
+    html_doc = requests.get(url).text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    return soup
+
+
+@app.route('/', methods=['GET', 'POST'])
+def main():
     token = request.values.get('token')
-    return(token)
+    if TOKEN == token:
+        soup = getHTML(URL)
+        matches = getMatches(soup)
+        return matches
+    else:
+        return "Invalid command"
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
