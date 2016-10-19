@@ -1,5 +1,6 @@
 from slackclient import SlackClient
 from flask import Flask, request
+from flask.json import jsonify
 from bs4 import BeautifulSoup
 import requests
 import os
@@ -10,13 +11,6 @@ app = Flask(__name__)
 TOKEN = "1n4NyiVvw9EPmc1YtnzfLi3D"
 URL = "http://www.espncricinfo.com/ci/engine/match/index.html?view=live"
 
-'''
-    Content-type: application/json
-    {
-                "text": "This is a line of text.\nAnd this is another one."
-                }
-
-'''
 
 def getCategories(soup):
     categories = soup.find_all("div", "match-section-head")
@@ -50,10 +44,7 @@ def getMatches(soup):
                 }
             details['matches'].append(det)
         matches.append(details)
-    return matches
-    #for match in matches:
-    #    print (match)
-    #    print()
+    return jsonify(matches)
 
 
 def getHTML(url):
