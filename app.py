@@ -11,6 +11,11 @@ app = Flask(__name__)
 TOKEN = "1n4NyiVvw9EPmc1YtnzfLi3D"
 URL = "http://www.espncricinfo.com/ci/engine/match/index.html?view=live"
 
+def getHTML(url):
+    html_doc = requests.get(url).text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    return soup
+
 
 def getCategories(soup):
     categories = soup.find_all("div", "match-section-head")
@@ -44,24 +49,32 @@ def getMatches(soup):
                 }
             details['matches'].append(det)
         matches.append(details)
-    return jsonify(matches)
+    #return jsonify(matches)
+    display(jsonify(matches))
 
 
-def getHTML(url):
-    html_doc = requests.get(url).text
-    soup = BeautifulSoup(html_doc, 'html.parser')
-    return soup
+def display(json_text):
+    message = {
+            'text': 'Live report of all matches',
+            'attachments': [
+                {
+                    'title': json_text['category'],
+                    'text': json_text['status']
+                }
+            ]
+        }
+    return message
 
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET', 'POST'])
 def main():
-    token = request.values.get('token')
-    if TOKEN == token:
-        soup = getHTML(URL)
-        matches = getMatches(soup)
-        return matches
-    else:
-        return "Invalid command"
+    #token = request.values.get('token')
+    #if TOKEN == token:
+    soup = getHTML(URL)
+    matches = getMatches(soup)
+    return matches
+    #else:
+    #    return "Invalid command"
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
