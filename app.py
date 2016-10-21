@@ -1,10 +1,11 @@
 from slackclient import SlackClient
 from flask import Flask, request
-from flask.json import jsonify
 from bs4 import BeautifulSoup
 import requests
+import json
 import os
 import time
+from flask.json import jsonify
 
 app = Flask(__name__)
 
@@ -23,7 +24,9 @@ def getCategories(soup):
     return categories
 
 def getMatches(soup):
-    matches = []
+    matches = {
+            'data': []
+            }
     categories = getCategories(soup)
     soup = soup.find(id="live-match-data")
     i=0
@@ -48,22 +51,24 @@ def getMatches(soup):
                 'status': match.find("div", "match-status").find("span", "bold").string
                 }
             details['matches'].append(det)
-        matches.append(details)
-    #return jsonify(matches)
-    display(jsonify(matches))
+        matches['data'].append(details)
+    #matches = json.dumps(matches)
+    return matches
 
 
-def display(json_text):
+def display(matches):
+    #matches = json.loads(matches)
     message = {
             'text': 'Live report of all matches',
             'attachments': [
                 {
-                    'title': json_text['category'],
-                    'text': json_text['status']
+                    'title': matches['data'][0]['category'],
+                    'text': matches['data'][0]['matches'][0]['status']
                 }
             ]
         }
     return message
+    #return json.dumps(message)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -72,7 +77,9 @@ def main():
     #if TOKEN == token:
     soup = getHTML(URL)
     matches = getMatches(soup)
-    return matches
+    results = display(matches)
+    results = json.dumps(results)
+    return results
     #else:
     #    return "Invalid command"
 
