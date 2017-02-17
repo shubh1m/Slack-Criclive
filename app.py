@@ -53,7 +53,8 @@ def getMatches(soup):
                 }
             if(det["team1"]["score"] or det["team2"]["score"]):
                 details["matches"].append(det)
-        matches["data"].append(details)
+        if(details["matches"]):
+            matches["data"].append(details)
     #matches = json.dumps(matches)
     return matches
 
