@@ -11,6 +11,7 @@ app = Flask(__name__)
 sched = BlockingScheduler()
 
 URL = "http://www.espncricinfo.com/ci/engine/match/index.html?view=live"
+BASE_URL = "http://www.espncricinfo.com"
 
 
 def getHTML(url):
@@ -49,6 +50,7 @@ def getMatches(soup):
                     "name": match.find("div", "innings-info-2").contents[0].strip(),
                     "score": match.find("div", "innings-info-2").contents[1].string
                     },
+                "url": BASE_URL + match.find("span", "match-no").find("a").get("href"),
                 "status": match.find("div", "match-status").find("span", "bold").string
                 }
             if(det["team1"]["score"] or det["team2"]["score"]):
@@ -77,6 +79,7 @@ def main():
     soup = getHTML(URL)
     matches = getMatches(soup)
     results = display(matches)
+    results = json.dumps(results, indent=4, sort_keys=True)
     return results
 
 
