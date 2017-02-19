@@ -72,7 +72,7 @@ def display(matches):
             summary = {
                 "title": match["team1"]["name"] + "-" + str(match["team1"]["score"]) + "  |  " + match["team2"]["name"] + "-" + str(match["team2"]["score"]),
                 "value": match["status"],
-                "short": false
+                #"short": false
             }
             c_summary.append(summary)
         attachment = {
