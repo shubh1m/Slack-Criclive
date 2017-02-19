@@ -68,7 +68,7 @@ def display(matches):
             ]
         }
     return message
-#return json.dumps(message)
+    #return json.dumps(message)
 
 
 @sched.scheduled_job('interval', minutes=1)
@@ -77,7 +77,6 @@ def main():
     soup = getHTML(URL)
     matches = getMatches(soup)
     results = display(matches)
-    results = json.dumps(results, indent=4, sort_keys=True)
     return results
 
 
