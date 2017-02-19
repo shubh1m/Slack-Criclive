@@ -5,13 +5,16 @@ import requests
 import json
 import os
 import time
-from apscheduler.schedulers.blocking import BlockingScheduler
+#from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
-sched = BlockingScheduler()
+#sched = BlockingScheduler()
+sched = BackgroundScheduler()
 
 URL = "http://www.espncricinfo.com/ci/engine/match/index.html?view=live"
 BASE_URL = "http://www.espncricinfo.com"
+API_URL = "https://criclive.herokuapp.com/"
 
 
 def getHTML(url):
@@ -93,13 +96,20 @@ def display(matches):
 @app.route('/', methods=['GET', 'POST'])
 def main():
     soup = getHTML(URL)
-    matches = getMatches(soup)
-    results = display(matches)
+    allMatches = getMatches(soup)
+    results = display(allMatches)
     results = json.dumps(results, indent=4, sort_keys=True)
     return results
 
 
+@app.route('/reply/', methods=['POST'])
+def replySlash():
+    message = requests.get(API_URL).json()
+    return message
+
+
 if __name__ == '__main__':
+    #global allMatches
     port = int(os.environ.get("PORT", 5000))
+    sched.start()
     app.run(host='0.0.0.0', port=port)
-    start()
