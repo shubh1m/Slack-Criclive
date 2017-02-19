@@ -104,7 +104,7 @@ def main():
 
 @app.route('/reply/', methods=['POST'])
 def replySlash():
-    message = requests.get(API_URL).json()
+    message = requests.get(API_URL).text
     return message
 
 
