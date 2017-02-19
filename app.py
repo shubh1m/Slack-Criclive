@@ -88,6 +88,7 @@ def display(matches):
             "text": "Live report of all matches",
             "attachments": attachments
         }
+    print(type(message))
     return message
     #return json.dumps(message)
 
@@ -102,11 +103,13 @@ def main():
     return results
 
 
-@app.route('/reply/', methods=['POST'])
+'''@app.route('/reply/', methods=['GET','POST'])
 def replySlash():
     message = requests.get(API_URL).text
+    json.loads(message)
+    print(type(message))
     return message
-
+'''
 
 if __name__ == '__main__':
     #global allMatches
