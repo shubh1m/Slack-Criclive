@@ -60,14 +60,30 @@ def getMatches(soup):
     #matches = json.dumps(matches)
     return matches
 
+#def score(team_score):
+#    return lambda s: "Not started" if team_score is None else str(team_score)
 
 def display(matches):
     #matches = json.loads(matches)
+    attachments = []
+    for categories in matches["data"]:
+        c_summary = []
+        for match in categories["matches"]:
+            summary = {
+                "title": match["team1"]["name"] + "-" + str(match["team1"]["score"]) + "  |  " + match["team2"]["name"] + "-" + str(match["team2"]["score"]),
+                "value": match["status"],
+                "short": "false"
+            }
+            c_summary.append(summary)
+        attachment = {
+            "pretext": categories["category"],
+            "fields": c_summary
+        }
+        attachments.append(attachment)
+
     message = {
             "text": "Live report of all matches",
-            "attachments": [
-                matches
-            ]
+            "attachments": attachments
         }
     return message
     #return json.dumps(message)
