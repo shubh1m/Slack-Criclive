@@ -45,11 +45,10 @@ def display(matches):
     #return json.dumps(message)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['POST'])
 def main():
     soup = getHTML(API_URL)
     results = display(soup)
-    print(type(results))
     #results = json.dumps(results, indent=4, sort_keys=True)
     results = json.dumps(results)
     return results
