@@ -49,7 +49,7 @@ def display(matches):
 def main():
     soup = getHTML(API_URL)
     results = display(soup)
-    results = json.dumps(results, indent=4, sort_keys=True)
+    #results = json.dumps(results, indent=4, sort_keys=True)
     return results
 
 
