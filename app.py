@@ -45,7 +45,7 @@ def display(matches):
     message = {
             "text": "Live report of all matches",
             "attachments": attachments,
-            #"mrkdwn": true
+            "mrkdwn": true
         }
     return message
     #return json.dumps(message)
