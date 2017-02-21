@@ -14,8 +14,12 @@ def getHTML(url):
     html_doc = requests.get(url).json()
     return html_doc
 
-#def score(team_score):
-#    return lambda s: "Not started" if team_score is None else str(team_score)
+def score(team_score):
+    if team_score:
+        formatted_score = team_score.replace("&", "&amp;")
+        return str(formatted_score)
+    else:
+        return "Not started"
 
 def display(matches):
     #matches = json.loads(matches)
@@ -24,7 +28,7 @@ def display(matches):
         c_summary = []
         for match in categories["matches"]:
             summary = {
-                "title": match["team1"]["name"] + "-" + str(match["team1"]["score"]) + "  |  " + match["team2"]["name"] + "-" + str(match["team2"]["score"]),
+                "title": match["team1"]["name"] + "-" + score(match["team1"]["score"]) + "  |  " + match["team2"]["name"] + "-" + score(match["team2"]["score"]),
                 "value": match["status"],
                 #"short": false
             }
@@ -33,13 +37,15 @@ def display(matches):
         if(c_summary):
             attachment = {
                 "pretext": categories["category"],
-                "fields": c_summary
+                "fields": c_summary,
+                "mrkdwn_in": ["text", "pretext", "fields"]
             }
             attachments.append(attachment)
 
     message = {
             "text": "Live report of all matches",
-            "attachments": attachments
+            "attachments": attachments,
+            #"mrkdwn": true
         }
     return message
     #return json.dumps(message)
@@ -56,4 +62,4 @@ def main():
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
