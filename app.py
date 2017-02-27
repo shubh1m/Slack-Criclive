@@ -1,5 +1,5 @@
 from slackclient import SlackClient
-from flask import Flask, request
+from flask import Flask, request, Response
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -57,8 +57,8 @@ def main():
     results = display(soup)
     #results = json.dumps(results, indent=4, sort_keys=True)
     results = json.dumps(results)
-    return results
-
+    #return results
+    return Response(results, content_type="text/plain; charset=utf-8")
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
